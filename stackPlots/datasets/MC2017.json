@@ -1,0 +1,93 @@
+{  
+   "data":"DoubleEG.root",
+   "signal":[
+         {
+            "name":"grav300",
+            "legend":"Grav. m_{X} = 300 GeV",
+            "color":924,
+            "style":2,
+            "weight":50000,
+            "file":"output_GluGluToBulkGravitonToHHTo2B2G_M-300_narrow_13TeV-madgraph.root",
+            "xsec" : 0.5,
+            "sfactor" : 1.0
+         },
+         {
+            "name":"rad600",
+            "legend":"Rad. m_{X} = 600 GeV",
+            "color":925,
+            "style":3,
+            "weight":50000,
+            "file":"output_GluGluToRadionToHHTo2B2G_M-600_narrow_13TeV-madgraph.root",
+            "xsec" : 0.5,
+            "sfactor" : 1.0
+         },
+         {
+            "name":"nrSM",
+            "legend":"SM Nonresonant",
+            "color":926,
+            "style":3,
+            "weight":50000,
+            "file":"output_GluGluToHHTo2B2G_node_SM_13TeV-madgraph.root",
+            "xsec" : 0.5,
+            "sfactor" : 1.0
+         }
+   ],
+   "background":{  
+      "QCD":{  
+         "position":0,
+         "legend":"QCD",
+         "color":"#2B74BA",
+         "files":[  
+            {  
+               "file":"output_QCD_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8.root",
+               "xsec":117400.0,
+               "nevents":20622034,
+               "weight":20622034,
+               "sfactor":1
+            },
+            {  
+               "file":"output_QCD_Pt-30to40_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8.root",
+               "xsec":24750.0,
+               "nevents":14669541,
+               "weight":14669541,
+               "sfactor":1
+            }
+         ]
+      },
+      "DiPhoJets":{
+         "position":1,
+         "legend":"#gamma#gamma+Jets",
+         "color":"#4aa6db",
+         "files":[
+            {
+               "file":"output_DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa.root",
+               "xsec":82.51,
+               "nevents":50851711,
+               "weight":50851711,
+               "sfactor":1.45
+            }
+         ]
+      },
+      "GJets":{  
+         "position":2,
+         "legend":"j#gamma+Jets/jj+Jets",
+         "color":"#4aa6db",
+         "files":[  
+            {  
+               "file":"output_GJet_Pt-20to40_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8.root",
+               "xsec":232.8,
+               "nevents":17678702,
+               "weight":17678702,
+               "sfactor":27.0
+            },
+            {
+		"file":"output_GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8.root",
+		"xsec":872.8,
+                "nevents":79243357,
+                "weight":79243357,
+                "sfactor":3.2
+	     }
+         ]
+      }
+   }
+}
