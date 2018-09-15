@@ -51,16 +51,13 @@ cNiceTangerine = TColor.GetColor('#FF8000')
 
 myCols = [cNicePaleYellow,kOrange,cNiceGreenDark-2, kGray+2, kMagenta+1]
 
-if not os.path.exists(dirName):
-        print dirName, "doesn't exist, creating it..."
-        os.makedirs(dirName)
-        if os.path.exists(dirName):
-                print dirName, "now exists!"
 
 datasets = json.load(data_file)
 
 Trees = {}
-
+#cut = '"leadingJet_bDis > 0.8"'+','+'"subleadingJet_bDis > 0.8"'
+cut = "HHbbggMVA > 0.0"
+print "cut=", cut
 
 CutSignal = Cut
 if doJetCR == True:
@@ -80,14 +77,19 @@ for plot in plots:
     Histos = []
 
     c1=TCanvas("c1","",1000,1000)
-    #c1.SetLogy()
-    c1.Update()
+    c1.SetLogy()
+    #c1.Update()
     backgroundHists = []
     j=0
     hs=THStack("hs",";"+plot[2]+";Events;;")
+    h1=TH1F("h1",";"+plot[2]+";Events;;",plot[3],plot[4],plot[5])
+    print datasets["data"]
+    dataName = plot[0]+"_hist"+"_data"
+
     for background in datasets["background"]:
         print background
         name=['GJet_Pt_20to40_DoubleEMEnriched_MGG_80toInf_TuneCP5_13TeV_Pythia8','GJet_Pt_40toInf_DoubleEMEnriched_MGG_80toInf_TuneCP5_13TeV_Pythia8','DiPhotonJetsBox_MGG_80toInf_13TeV_Sherpa','QCD_Pt_40toInf_DoubleEMEnriched_MGG_80toInf_TuneCP5_13TeV_Pythia8','QCD_Pt_30to40_DoubleEMEnriched_MGG_80toInf_TuneCP5_13TeV_Pythia8']
+	
         #if "QCD" in background: continue
         for i,fi in enumerate(datasets["background"][background]["files"]):
             print fi            
@@ -98,9 +100,11 @@ for plot in plots:
             tree=myfile.Get("tagsDumper/trees/"+name[j]+"_13TeV_DoubleHTag_0")
             print tree
             nev = tree.GetEntries()
+            #tree.Print()
             j=j+1
+            #if tree.leadingJet_bDis > 0.8 and tree.subleadingJet_bDis > 0.8 and tree.HHbbggMVA > 0.4:
             if "GJets" in background:
-              tree.Draw(plot[1]+">>locHist_GJets("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")")
+              tree.Draw(plot[1]+">>locHist_GJets("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")","HHbbggMVA > 0.4")
               locHist_GJets.SetDirectory(0)
               #locHist_GJets.Scale(1./locHist_GJets.Integral())
               locHist_GJets.Scale(MCSF*lumi*fi["xsec"]*fi["sfactor"]/fi["weight"])
@@ -109,10 +113,8 @@ for plot in plots:
               #locHist_GJets.Draw("hist")
               if i==1: leg.AddEntry(locHist_GJets,datasets["background"][background]["legend"])
 	      hs.Add(locHist_GJets)
-              #continue
             if "DiPhoJets" in background:
-              #c1.Update()
-              tree.Draw(plot[1]+">>locHist_DiPhoJets("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")")
+              tree.Draw(plot[1]+">>locHist_DiPhoJets("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")","HHbbggMVA > 0.4")
               locHist_DiPhoJets.SetDirectory(0)
               #locHist_DiPhoJets.Scale(1./locHist_DiPhoJets.Integral())
               locHist_DiPhoJets.Scale(MCSF*lumi*fi["xsec"]*fi["sfactor"]/fi["weight"])
@@ -122,8 +124,7 @@ for plot in plots:
               leg.AddEntry(locHist_DiPhoJets,datasets["background"][background]["legend"])
               hs.Add(locHist_DiPhoJets)
             if "QCD" in background:
-              #c1.Update()              
-	      tree.Draw(plot[1]+">>locHist_QCD("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")")
+	      tree.Draw(plot[1]+">>locHist_QCD("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")","HHbbggMVA > 0.4")
               locHist_QCD.SetDirectory(0)
               #locHist_QCD.Scale(1./locHist_QCD.Integral())
 	      locHist_QCD.Scale(MCSF*lumi*fi["xsec"]*fi["sfactor"]/fi["weight"])
@@ -133,29 +134,27 @@ for plot in plots:
               if i==1: leg.AddEntry(locHist_QCD,datasets["background"][background]["legend"])             
               hs.Add(locHist_QCD)
 
-            #dir = TDirectory()
-            #dir=myfile.Get("tagsDumper/trees")
-            #dir.ls()
-            #mytree = TTree('mytree','mytree')
-            #dir.GetObject(name[j]+"_13TeV_DoubleHTag_0", mytree)
-            #j=j+1
-            #mytree.Draw(plot[1]+">>locHist(100, 0.000000, 190.000000")
-            #locHist.SetName(thisName+str(i))
-            #locHist.SetLineColor(TColor.GetColor(datasets["background"][background]["color"]))
-            #locHist.SetFillColor(TColor.GetColor(datasets["background"][background]["color"]))
-            #locHist.Scale(MCSF*lumi*fi["xsec"]*fi["sfactor"]/fi["weight"])
-            #I=locHist.Integral()
-            #locHist.Scale(1./I)
-            #locHist.SetDirectory(0)
-            #locHist.SetName(thisName+str(i))
-            #hist_list.append(locHist)
-            #I=hist_list[i].Integral()
-            #hist_list[i].Scale(1./I)
-            #Histos.append(locHist)
-	    #print thisName, " ",  locHist.Integral()
-    c1.cd()
-    c1.Update()
-    hs.Draw("hist")   
+    hs.SetMaximum(1e3)
+    hs.SetMinimum(1e-2)
+    #hs.Draw("hist")
+    name=['Data']
+    if datasets["data"] not in Trees:
+        myfile = TFile.Open(bkgLocation+"Data.root")
+        tree=myfile.Get("tagsDumper/trees/"+name[0]+"_13TeV_DoubleHTag_0")
+        print tree
+        tree.Draw(plot[1]+">>locHist_Data("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")","HHbbggMVA > 0.4")
+        locHist_Data.SetDirectory(0)
+        locHist_Data.SetMarkerStyle(20)
+        locHist_Data.SetMarkerSize(1.0)
+        locHist_Data.SetMarkerColor(1)
+        locHist_Data.SetLineColor(1)
+        locHist_Data.SetLineWidth(2)
+        locHist_Data.SetBinErrorOption(TH1.kPoisson)
+        h1 = locHist_Data.Clone("h1")
+        #h1.Draw("same p e1")
+        leg.AddEntry(locHist_Data,"Data", "lf")
+    hs.Draw("hist")
+    h1.Draw("same p e1")   
     leg.Draw()
     dummyTFile.cd()
     c1.Write()
