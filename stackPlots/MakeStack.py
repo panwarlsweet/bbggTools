@@ -131,12 +131,33 @@ for plot in plots:
               locHist_QCD.SetLineColor(myCols[2])
               locHist_QCD.SetFillColor(myCols[2])
               locHist_QCD.Draw("histsame")
-              if i==1: leg.AddEntry(locHist_QCD,datasets["background"][background]["legend"])             
+              #if i==1: leg.AddEntry(locHist_QCD,datasets["background"][background]["legend"])             
               hs.Add(locHist_QCD)
+
+##### stacking the signal ########
+    for signal in datasets["signal"]:
+        print signal
+        name=['GluGluToHHTo2B2G_node_SM_13TeV_madgraph']
+        for i,fi in enumerate(datasets["signal"][signal]["files"]):
+            print fi
+            thisTreeLoc = fi["file"]
+            myfile = TFile.Open(bkgLocation+thisTreeLoc)
+            myfile.ls()
+            print "j==",j
+            tree=myfile.Get("tagsDumper/trees/"+name[0]+"_13TeV_DoubleHTag_0")
+            print tree
+            if "nrSM" in signal:
+              tree.Draw(plot[1]+">>locHist_nrSM("+str(plot[3])+","+str(plot[4])+","+str(plot[5])+")","HHbbggMVA > 0.4")
+              locHist_nrSM.SetDirectory(0)
+              locHist_nrSM.Scale(lumi*fi["xsec"]*fi["sfactor"]/fi["weight"])
+              locHist_nrSM.SetLineColor(datasets["signal"][signal]["color"])
+              leg.AddEntry(locHist_nrSM,datasets["signal"][signal]["legend"])
+              hs.Add(locHist_nrSM)
 
     hs.SetMaximum(1e3)
     hs.SetMinimum(1e-2)
-    #hs.Draw("hist")
+
+####### Stacking the Data part #########
     name=['Data']
     if datasets["data"] not in Trees:
         myfile = TFile.Open(bkgLocation+"Data.root")
