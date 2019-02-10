@@ -64,7 +64,7 @@
                "xsec":82.51,
                "nevents":50851711,
                "weight":50851711,
-               "sfactor":1.45
+               "sfactor":1.5
             }
          ]
       },
@@ -85,7 +85,7 @@
 		"xsec":872.8,
                 "nevents":79243357,
                 "weight":79243357,
-                "sfactor":3.2
+                "sfactor":4.5
 	     }
          ]
       }
